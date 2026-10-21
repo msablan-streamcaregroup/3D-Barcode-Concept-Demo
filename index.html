@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Barcode Verification</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="brand">
+        <div class="mark logo-mark" aria-hidden="true">
+          <span style="height:86%;background:#08332f"></span>
+          <span style="height:52%;background:#c4a46a"></span>
+          <span style="height:74%;background:#0f6a62"></span>
+          <span style="height:40%;background:#8c3e34"></span>
+          <span style="height:66%;background:#24312d"></span>
+          <span style="height:48%;background:#6e8f86"></span>
+        </div>
+        <div>
+          <p class="eyebrow">Healthcare fraud prevention demo</p>
+          <h1>3D Barcode Verification</h1>
+        </div>
+      </div>
+      <button type="button" class="ghost" id="reset-demo">Reset demo data</button>
+    </header>
+
+    <p class="lede">Link a physical barcode to the digital record, then confirm the doctor, patient, and procedure belong to the same performed order.</p>
+
+    <nav class="steps" aria-label="Demo steps">
+      <button type="button" data-step="register" aria-current="step">1 · Register</button>
+      <button type="button" data-step="verify">2 · Verify</button>
+      <button type="button" data-step="results">3 · Results</button>
+    </nav>
+
+    <main>
+      <section id="panel-register">
+        <div class="register-layout">
+          <div>
+            <h2>Register</h2>
+            <p>Assign a unique barcode to a doctor, patient, medication, or procedure. Then create an order that links them.</p>
+
+            <div class="kind-switch" role="tablist" aria-label="Registration type">
+              <button type="button" role="tab" id="tab-doctors" data-kind="doctors" aria-selected="true" aria-controls="form-doctors">Doctor</button>
+              <button type="button" role="tab" id="tab-patients" data-kind="patients" aria-selected="false" aria-controls="form-patients">Patient</button>
+              <button type="button" role="tab" id="tab-medications" data-kind="medications" aria-selected="false" aria-controls="form-medications">Medication</button>
+              <button type="button" role="tab" id="tab-procedures" data-kind="procedures" aria-selected="false" aria-controls="form-procedures">Procedure</button>
+              <button type="button" role="tab" id="tab-order" data-kind="order" aria-selected="false" aria-controls="form-order">Procedure order</button>
+            </div>
+
+            <form id="form-doctors" data-form="doctors">
+              <label for="input-doctors">Doctor name</label>
+              <input id="input-doctors" name="name" autocomplete="off" placeholder="Dr. Lina Ortega">
+              <p class="field-error" role="alert"></p>
+              <button type="submit" class="primary">Assign barcode</button>
+            </form>
+
+            <form id="form-patients" data-form="patients" hidden>
+              <label for="input-patients">Patient name</label>
+              <input id="input-patients" name="name" autocomplete="off" placeholder="Mateo Chen">
+              <p class="field-error" role="alert"></p>
+              <button type="submit" class="primary">Assign barcode</button>
+            </form>
+
+            <form id="form-medications" data-form="medications" hidden>
+              <label for="input-medications">Medication identifier</label>
+              <input id="input-medications" name="name" autocomplete="off" placeholder="Amoxicillin 500mg">
+              <p class="field-error" role="alert"></p>
+              <button type="submit" class="primary">Assign barcode</button>
+            </form>
+
+            <form id="form-procedures" data-form="procedures" hidden>
+              <label for="input-procedures">Procedure or device name</label>
+              <input id="input-procedures" name="name" autocomplete="off" placeholder="Pulse oximeter">
+              <p class="field-error" role="alert"></p>
+              <button type="submit" class="primary">Assign barcode</button>
+            </form>
+
+            <form id="form-order" data-form="order" hidden>
+              <label for="select-doctor">Doctor</label>
+              <select id="select-doctor"></select>
+              <label for="select-patient">Patient</label>
+              <select id="select-patient"></select>
+              <label for="select-procedure">Procedure or device</label>
+              <select id="select-procedure"></select>
+              <label for="select-medication">Medication <span class="optional">(optional)</span></label>
+              <select id="select-medication"></select>
+              <p class="field-error" role="alert"></p>
+              <button type="submit" class="primary">Create procedure order</button>
+            </form>
+
+            <div id="last-assigned" class="assigned" hidden></div>
+          </div>
+
+          <aside class="registry-card">
+            <h2>Stored records</h2>
+            <div id="registry"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="panel-verify" hidden>
+        <h2>Verify</h2>
+        <p>Scan the doctor, the patient, and the procedure. Each scan chooses a registered barcode and plays a one-second reading animation.</p>
+        <div class="slot-grid">
+          <article class="slot">
+            <h3>Doctor</h3>
+            <div class="slot-body" data-slot-body="doctor"></div>
+            <button type="button" class="primary" data-scan="doctor">Scan</button>
+          </article>
+          <article class="slot">
+            <h3>Patient</h3>
+            <div class="slot-body" data-slot-body="patient"></div>
+            <button type="button" class="primary" data-scan="patient">Scan</button>
+          </article>
+          <article class="slot">
+            <h3>Procedure</h3>
+            <div class="slot-body" data-slot-body="procedure"></div>
+            <button type="button" class="primary" data-scan="procedure">Scan</button>
+          </article>
+        </div>
+        <p id="verify-alert" class="field-error" role="alert"></p>
+        <button type="button" class="primary" id="verify-linkage">Verify linkage</button>
+      </section>
+
+      <section id="panel-results" hidden>
+        <h2>Results</h2>
+        <p id="result-empty">Scan a doctor, a patient, and a procedure, then verify the linkage.</p>
+        <div id="result-content" hidden>
+          <p id="result-message" class="verdict" role="status"></p>
+          <table class="results-table">
+            <caption>Verification status</caption>
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="result-rows"></tbody>
+          </table>
+          <dl id="order-detail" class="order-detail"></dl>
+          <button type="button" class="ghost" id="verify-another">Verify another</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="scan-dialog" aria-labelledby="scan-title">
+    <div class="dialog-card">
+      <h2 id="scan-title"></h2>
+      <p id="scan-status" role="status"></p>
+      <div id="scan-list"></div>
+      <button type="button" class="ghost" id="scan-cancel">Cancel</button>
+    </div>
+  </dialog>
+
+  <noscript>
+    <p class="noscript">This demo needs JavaScript to assign barcodes and verify orders.</p>
+  </noscript>
+  <script src="app.js"></script>
+</body>
+</html>
