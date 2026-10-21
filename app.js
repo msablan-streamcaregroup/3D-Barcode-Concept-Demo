@@ -218,23 +218,6 @@
     return found ? found.name : "Unknown";
   }
 
-  function bandPattern(id) {
-    let hash = 2166136261;
-    const colors = ["#08332f", "#0f6a62", "#c4a46a", "#8c3e34", "#24312d", "#6e8f86"];
-    const bands = [];
-    const source = String(id);
-    for (let i = 0; i < 6; i += 1) {
-      hash ^= source.charCodeAt(i % source.length);
-      hash = Math.imul(hash, 16777619) >>> 0;
-      const slice = (hash >>> (i * 3)) & 15;
-      bands.push({
-        height: 38 + ((slice * 4) % 58),
-        color: colors[hash % colors.length]
-      });
-    }
-    return bands;
-  }
-
   const api = {
     SEED: SEED,
     freshState: freshState,
@@ -286,16 +269,14 @@
     return node;
   }
 
-  function appendMark(parent, id) {
+  function appendMark(parent) {
     const mark = document.createElement("div");
     mark.className = "mark";
     mark.setAttribute("aria-hidden", "true");
-    bandPattern(id).forEach((band) => {
-      const span = document.createElement("span");
-      span.style.height = band.height + "%";
-      span.style.background = band.color;
-      mark.appendChild(span);
-    });
+    const image = document.createElement("img");
+    image.src = "images/3d-barcode.png";
+    image.alt = "";
+    mark.appendChild(image);
     parent.appendChild(mark);
     return mark;
   }
