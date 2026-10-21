@@ -385,9 +385,8 @@
         button.textContent = "Scan";
       } else {
         appendMark(body, selected.id);
-        if (slot !== "procedure") {
-          body.append(el("p", "slot-name", selected.name), el("p", "mono", selected.id));
-        }
+        if (slot === "procedure") body.append(el("p", "slot-name", selected.name));
+        else body.append(el("p", "slot-name", selected.name), el("p", "mono", selected.id));
         button.textContent = "Scan again";
       }
     });
@@ -487,7 +486,7 @@
       button.className = "scan-choice";
       appendMark(button, item.id);
       const text = document.createElement("div");
-      if (slot === "procedure") text.append(el("p", null, "Procedure"));
+      if (slot === "procedure") text.append(el("p", null, item.name));
       else text.append(el("p", null, item.name), el("p", "mono", item.id));
       button.append(text);
       button.addEventListener("click", () => beginScan(item, button));
