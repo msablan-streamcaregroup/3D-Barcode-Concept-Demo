@@ -329,7 +329,7 @@ select {
   align-content: center;
   justify-items: start;
   gap: 0.2rem;
-  min-height: 168px;
+  min-height: 84px;
 }
 
 .slot .primary {

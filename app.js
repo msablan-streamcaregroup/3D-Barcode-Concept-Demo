@@ -187,12 +187,11 @@
         && order.procedureId === procedureId
         && order.status === "ordered-and-performed";
     });
-    const linked = Boolean(doctor && patient && procedure && matches.length);
-    const order = linked ? matches[matches.length - 1] : null;
-    let message;
-    if (linked) message = "Physical and digital verification complete.";
-    else if (!doctor || !patient || !procedure) message = "Verification failed. One or more barcodes are not in the registry.";
-    else message = "Verification failed. These barcodes are not linked to the same performed procedure.";
+    const linked = Boolean(doctor && patient && procedure);
+    const order = linked && matches.length ? matches[matches.length - 1] : null;
+    const message = linked
+      ? "Physical and digital verification complete."
+      : "Verification failed. One or more barcodes are not in the registry.";
 
     return {
       doctor: { status: doctor ? "verified" : "not-recognized", name: doctor ? doctor.name : null, id: doctorId },
@@ -386,7 +385,9 @@
         button.textContent = "Scan";
       } else {
         appendMark(body, selected.id);
-        body.append(el("p", "slot-name", selected.name), el("p", "mono", selected.id));
+        if (slot !== "procedure") {
+          body.append(el("p", "slot-name", selected.name), el("p", "mono", selected.id));
+        }
         button.textContent = "Scan again";
       }
     });
@@ -486,7 +487,8 @@
       button.className = "scan-choice";
       appendMark(button, item.id);
       const text = document.createElement("div");
-      text.append(el("p", null, item.name), el("p", "mono", item.id));
+      if (slot === "procedure") text.append(el("p", null, "Procedure"));
+      else text.append(el("p", null, item.name), el("p", "mono", item.id));
       button.append(text);
       button.addEventListener("click", () => beginScan(item, button));
       scanList.append(button);

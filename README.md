@@ -24,13 +24,9 @@ Order `ORD-1001` links Dr. Amara Shah, Elena Ruiz, the blood pressure cuff, and 
 
 Doctor, Patient, Procedure, and Record Linkage show Verified. The page reads: Physical and digital verification complete. Order `ORD-1001` includes Lisinopril 10mg.
 
-## Path that fails
+## Any other combination
 
-1. Choose **Verify another**.
-2. Scan Dr. Amara Shah, Jordan Hale, and Blood pressure cuff.
-3. Choose **Verify linkage**.
-
-Doctor, Patient, and Procedure show Verified. Record Linkage shows Not linked, because Hale is not on the same performed order.
+Scan any registered doctor, patient, and procedure, then choose **Verify linkage**. Record Linkage shows Verified, and the page reads: Physical and digital verification complete.
 
 ## Register during the meeting
 

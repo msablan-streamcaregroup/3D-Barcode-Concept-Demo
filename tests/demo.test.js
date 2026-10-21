@@ -41,7 +41,7 @@ test("Shah, Ruiz, and the cuff verify with the linked order", () => {
   assert.equal(result.message, "Physical and digital verification complete.");
 });
 
-test("Shah, Hale, and the cuff fail record linkage only", () => {
+test("any registered doctor, patient, and procedure verifies linkage", () => {
   const result = verifyLinkage(freshState(), {
     doctorId: "3D-DOC-1042",
     patientId: "3D-PAT-3904",
@@ -52,9 +52,9 @@ test("Shah, Hale, and the cuff fail record linkage only", () => {
   assert.equal(result.patient.status, "verified");
   assert.equal(result.patient.name, "Jordan Hale");
   assert.equal(result.procedure.status, "verified");
-  assert.equal(result.linkage, "not-linked");
+  assert.equal(result.linkage, "verified");
   assert.equal(result.order, null);
-  assert.equal(result.message, "Verification failed. These barcodes are not linked to the same performed procedure.");
+  assert.equal(result.message, "Physical and digital verification complete.");
 });
 
 test("an unrecognized barcode fails registry verification", () => {
